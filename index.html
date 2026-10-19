@@ -18,7 +18,6 @@
       --text-muted: #64748b;
       --accent: #0f172a;
       --accent-blue: #0369a1;
-      --accent-amber: #b45309;
     }
 
     * {
@@ -223,16 +222,23 @@
       margin-right: 6px;
     }
 
-    /* 注意書き・コツ */
+    /* 実用メモ・補足事項 */
     .note-box {
-      background-color: #fffbeb;
-      border: 1px solid #fcd34d;
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-main);
+      border-left: 3px solid var(--accent);
       padding: 12px 16px;
       margin: 14px 0;
       font-size: 13px;
+      line-height: 1.7;
+    }
+    .note-box-title {
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
     }
     .note-box strong {
-      color: var(--accent-amber);
+      color: var(--text-main);
     }
 
     /* テーブル（ショートカット・仕様） */
@@ -409,7 +415,7 @@ E|-----------------------|-3-----------------------|
           スペースキーの代わりに、実際のギターやベースをオーディオインターフェースやマイクに繋いでリズムを入力する「音声入力（ストローク時のみ推奨）」機能も搭載しています。
         </p>
         <div class="note-box">
-          <strong>音声入力時の重要なコツ：</strong><br />
+          <div class="note-box-title">実音ではなく「ブラッシング（ミュート音）」で刻む理由</div>
           実音をそのままジャラーンと鳴らすと、弦の残響音や倍音のうねりで音量しきい値を何度も跨いでしまい、意図しない細かい音符が連続で刻まれやすくなります。音声入力でリズムを録るときは、<strong>左手で全弦に軽く触れてミュートし、「チャッ、チャッ」というブラッシング（パーカッシブなアタック音）の形</strong>でストロークやピッキングを行ってください。アタックの立ち上がりだけが綺麗に検出され、狙い通りのリズムが刻めます。
         </div>
 
