@@ -1,11 +1,601 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=https://hirokidesuyo.github.io/tab-maker/" />
-    <title>Redirecting to EasyTapTabs...</title>
-  </head>
-  <body>
-    <p>Redirecting to <a href="https://hirokidesuyo.github.io/tab-maker/">EasyTapTabs</a>...</p>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyTapTabs - スペースキーで作るタブ譜作成ツール</title>
+  <meta name="description" content="メトロノームに合わせてスペースキーを叩くだけでリズムを先に記録し、あとから弦とフレットを埋めていくギター・ベース用のTAB譜作成Webツール。" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2949901639211282" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg-page: #ececec;
+      --bg-paper: #ffffff;
+      --bg-subtle: #f6f6f6;
+      --border-main: #c4c4c4;
+      --border-light: #dcdcdc;
+      --text-main: #1e293b;
+      --text-sub: #475569;
+      --text-muted: #64748b;
+      --accent: #0f172a;
+      --accent-blue: #0369a1;
+      --accent-amber: #b45309;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+      font-size: 14px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* 上部バー（アプリ本体と同じトーン） */
+    .topbar {
+      background-color: #f3f3f3;
+      border-bottom: 1px solid var(--border-main);
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+    .topbar-inner {
+      max-width: 880px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .brand {
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .brand span {
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+    }
+    .nav-links a {
+      color: var(--text-sub);
+    }
+
+    /* メインコンテナ（紙のスコアシート・取扱説明書風） */
+    .container {
+      max-width: 880px;
+      margin: 20px auto 48px;
+      padding: 0 12px;
+    }
+
+    .sheet {
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-main);
+      padding: 32px 36px;
+    }
+
+    @media (max-width: 640px) {
+      .sheet {
+        padding: 20px 16px;
+      }
+    }
+
+    /* タイトル＆起動ボックス */
+    .hero {
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 24px;
+      margin-bottom: 28px;
+    }
+    .hero-label {
+      display: inline-block;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 11px;
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-main);
+      padding: 1px 6px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+    .hero h1 {
+      margin: 0 0 10px 0;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--accent);
+    }
+    .hero p {
+      margin: 0 0 20px 0;
+      color: var(--text-sub);
+      font-size: 14px;
+    }
+
+    .launch-area {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-main);
+      padding: 18px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .launch-info {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .launch-info strong {
+      display: block;
+      color: var(--text-main);
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    .btn-launch {
+      display: inline-block;
+      background-color: var(--accent);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 24px;
+      border: 1px solid #000000;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-launch:hover {
+      background-color: #334155;
+      text-decoration: none;
+    }
+
+    /* TAB譜サンプル表示（ASCII/モノスペース） */
+    .tab-preview {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.45;
+      background-color: #fafafa;
+      border: 1px solid var(--border-light);
+      padding: 12px 16px;
+      margin: 16px 0 0 0;
+      overflow-x: auto;
+      color: #334155;
+    }
+
+    /* セクション見出し */
+    section {
+      margin-bottom: 36px;
+    }
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 0 0 14px 0;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-main);
+      color: var(--accent);
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 20px 0 6px 0;
+      color: var(--text-main);
+    }
+    p {
+      margin: 0 0 12px 0;
+    }
+
+    /* ステップ解説 */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 14px 0;
+    }
+    .step-item {
+      border: 1px solid var(--border-light);
+      background-color: #fcfcfc;
+      padding: 14px 16px;
+    }
+    .step-head {
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--accent);
+    }
+    .step-num {
+      font-family: Consolas, Monaco, monospace;
+      font-size: 12px;
+      background-color: #e2e8f0;
+      padding: 1px 6px;
+      margin-right: 6px;
+    }
+
+    /* 注意書き・コツ */
+    .note-box {
+      background-color: #fffbeb;
+      border: 1px solid #fcd34d;
+      padding: 12px 16px;
+      margin: 14px 0;
+      font-size: 13px;
+    }
+    .note-box strong {
+      color: var(--accent-amber);
+    }
+
+    /* テーブル（ショートカット・仕様） */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid var(--border-main);
+      padding: 7px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background-color: var(--bg-subtle);
+      font-weight: 700;
+      width: 34%;
+    }
+    kbd {
+      font-family: Consolas, Monaco, monospace;
+      font-size: 12px;
+      background-color: #ffffff;
+      border: 1px solid #94a3b8;
+      padding: 1px 6px;
+      font-weight: 700;
+    }
+
+    /* FAQ */
+    .faq-item {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed var(--border-light);
+    }
+    .faq-q {
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .faq-a {
+      color: var(--text-sub);
+      font-size: 13.5px;
+    }
+
+    /* ポリシー・フッター領域 */
+    .policy-section {
+      font-size: 12.5px;
+      color: var(--text-sub);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      padding: 16px 20px;
+      margin-top: 28px;
+    }
+    .policy-section h2 {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .policy-section h3 {
+      font-size: 13px;
+      margin: 14px 0 4px 0;
+    }
+
+    footer {
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-main);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        EasyTapTabs <span>— スペースキーで作るタブ譜</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#workflow">使い方</a>
+        <a href="#shortcuts">ショートカット</a>
+        <a href="#tips">採譜のコツ</a>
+        <a href="#faq">よくある質問</a>
+        <a href="#privacy">プライバシーポリシー</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <main class="sheet">
+      <!-- ヒーロー・ツール起動 -->
+      <div class="hero">
+        <div class="hero-label">GUITAR / BASS TAB EDITOR</div>
+        <h1>EasyTapTabs — スペースキーで作るタブ譜</h1>
+        <p>
+          メトロノームに合わせてキーボードの Space キーを叩いて「リズム（タイミングと音の長さ）」だけを先に記録し、あとから弦とフレット番号を埋めていく方式のギター・ベース用TAB譜作成ツールです。
+        </p>
+
+        <div class="launch-area">
+          <div class="launch-info">
+            <strong>ブラウザ上でそのまま動きます（インストール・会員登録不要）</strong>
+            PCのキーボード操作に最適化しています。作成した譜面はJSON保存やPDF印刷に対応。
+          </div>
+          <a class="btn-launch" href="/tab-maker/">EasyTapTabs を開く &rarr;</a>
+        </div>
+
+        <pre class="tab-preview">G|-------9---7-----------|-------------------------|
+D|---7-----------9---7---|---5---7---7b9==(9)------|
+A|-0---0---0---0---0---0-|-------------------------|
+E|-----------------------|-3-----------------------|
+   [STEP 1] Spaceでリズムを刻む  ->  [STEP 2] 数字キーでフレットを入力</pre>
+      </div>
+
+      <!-- 制作の背景（なぜこの方式なのか） -->
+      <section id="about">
+        <h2>なぜ「リズムが先、フレットが後」なのか</h2>
+        <p>
+          一般的なTAB譜作成ソフト（TuxGuitarやGuitar Proなど）は高機能ですが、耳コピしながら譜面を書くときに「ここは16分音符だから音価を切り替えて、休符を入れて、付点をつけて、タイで繋いで……」と計算しながら入力するのがとにかく面倒でした。
+        </p>
+        <p>
+          フレーズが頭の中で鳴っているときは、音符の種類を計算するよりも、メトロノームに合わせて机やスペースキーを「タッカ・タッカ・ターン」と叩く方が圧倒的に速く正確です。
+        </p>
+        <p>
+          そこで本ツールでは、<strong>「最初は音程（何弦の何フレットか）を一切気にせず、リズムと音の長さだけをリアルタイムで打ち込む」</strong>という割り切った2段階の入力方式を採っています。リズムの枠さえできてしまえば、あとは矢印キーと数字キーでパズルを埋めるようにフレット番号を入れていくだけでTAB譜が完成します。
+        </p>
+      </section>
+
+      <!-- 基本的な使い方 -->
+      <section id="workflow">
+        <h2>基本的な使い方（3ステップ）</h2>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-head"><span class="step-num">STEP 1</span>メトロノームに合わせてリズムを刻む</div>
+            <p>
+              上部の操作盤で楽器（ギター6弦 / ベース4弦）とBPM、クオンタイズ（16分音符または8分音符・32分音符）を選び、「リズム採譜開始」を押します。4拍（または8拍）のカウントインが鳴ったあと、クリック音に合わせて <kbd>Space</kbd> キーを叩きます。キーを長押しした分だけ伸びる音符として記録され、譜面上に未確定の音符「<code>?</code>」が並びます。
+            </p>
+            <p style="margin-bottom:0;">
+              ギターのコードストロークなどを入力したい場合は、収録モードを「和音（全弦に?）」に切り替えておくと、打鍵したタイミングの全弦に一括で「<code>?</code>」が配置されます。
+            </p>
+          </div>
+
+          <div class="step-item">
+            <div class="step-head"><span class="step-num">STEP 2</span>弦とフレット番号を割り当てる</div>
+            <p style="margin-bottom:0;">
+              記録された「<code>?</code>」をクリックして選択し、キーボードの数字キー（<code>0</code>〜<code>24</code>）でフレット番号を入力します。2桁のフレット（10〜24）もそのまま連続入力できます。<kbd>&uarr;</kbd> <kbd>&darr;</kbd> キーで弦を上下に移動でき、<kbd>&larr;</kbd> <kbd>&rarr;</kbd> キーで前後の音符へ順番に移動しながら連続してフレットを埋めていけます。
+            </p>
+          </div>
+
+          <div class="step-item">
+            <div class="step-head"><span class="step-num">STEP 3</span>再生確認・五線譜切替・印刷（PDF保存）</div>
+            <p style="margin-bottom:0;">
+              「再生確認」ボタンを押すと、入力したTAB譜が内蔵シンセ音源で再生されます。タイ・スラーやチョーキング（半音・全音ベンド）のニュアンスもそのまま音に反映されます。完成した譜面は「保存」でJSONファイルとして手元に控えたり、「印刷 / PDF」からA4サイズに綺麗に収まる形で出力できます。また「楽譜表示」ボタンを押すと、タブ譜から自動変換された五線譜（ギターは8vbト音記号、ベースはヘ音記号）でも確認・印刷が可能です。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 採譜を綺麗に行うコツ -->
+      <section id="tips">
+        <h2>綺麗に採譜するための実用ティップス</h2>
+
+        <h3>1. 速いフレーズはBPMを落として収録する</h3>
+        <p>
+          BPM 160以上の速い16分フレーズなどを原曲テンポのままスペースキーで正確に叩くのは至難の業です。収録時はいったんBPMを 80〜100 程度まで落としてゆっくり確実にリズムを刻み、収録が終わったあとでBPMを本来の数値に戻してください。内部的には小節内のステップ位置で管理されているため、あとからBPMを変えてもリズムは一切崩れません。
+        </p>
+
+        <h3>2. 音声入力（マイク／オーディオIF）を使う場合は「ブラッシング」で刻む</h3>
+        <p>
+          スペースキーの代わりに、実際のギターやベースをオーディオインターフェースやマイクに繋いでリズムを入力する「音声入力（ストローク時のみ推奨）」機能も搭載しています。
+        </p>
+        <div class="note-box">
+          <strong>音声入力時の重要なコツ：</strong><br />
+          実音をそのままジャラーンと鳴らすと、弦の残響音や倍音のうねりで音量しきい値を何度も跨いでしまい、意図しない細かい音符が連続で刻まれやすくなります。音声入力でリズムを録るときは、<strong>左手で全弦に軽く触れてミュートし、「チャッ、チャッ」というブラッシング（パーカッシブなアタック音）の形</strong>でストロークやピッキングを行ってください。アタックの立ち上がりだけが綺麗に検出され、狙い通りのリズムが刻めます。
+        </div>
+
+        <h3>3. 1小節だけ録り直したいときは小節左上の「●録音」を使う</h3>
+        <p>
+          「3小節目だけリズムをミスした」という場合、全体を通しで録り直す必要はありません。各小節の左上にある「●録音」ボタンを押すと、カウントインのあとにその1小節だけをピンポイントで上書き収録し、小節の終わりに自動で停止します。また、同じリフが続く場合は小節の「コピー」「貼付」ボタンでそのまま複製できます。
+        </p>
+      </section>
+
+      <!-- ショートカット一覧 -->
+      <section id="shortcuts">
+        <h2>キーボード操作・ショートカット一覧</h2>
+        <p>
+          マウスとキーボードを行き来する手間を減らすため、ほぼすべての編集作業がキーボード単体で完結するように設計しています。
+        </p>
+        <table>
+          <tbody>
+            <tr>
+              <th><kbd>Space</kbd></th>
+              <td>採譜中：リズム打鍵（長押しで延音）／ 再生中：再生の即時停止</td>
+            </tr>
+            <tr>
+              <th><kbd>&larr;</kbd> / <kbd>&rarr;</kbd></th>
+              <td>前後の音符へ選択フォーカスを移動（小節をまたいで移動可能）</td>
+            </tr>
+            <tr>
+              <th><kbd>&uarr;</kbd> / <kbd>&darr;</kbd></th>
+              <td>単音時：選択中の音符の弦を上下に移動<br />和音時：同じタイミングの上下の弦にある音符へフォーカス移動（<kbd>Shift</kbd> + <kbd>&uarr;</kbd>/<kbd>&darr;</kbd> で弦自体を移動）</td>
+            </tr>
+            <tr>
+              <th><kbd>0</kbd> 〜 <kbd>9</kbd></th>
+              <td>フレット番号の入力（<code>1</code> &rarr; <code>2</code> と素早く押すと12フレットとして認識）</td>
+            </tr>
+            <tr>
+              <th><kbd>C</kbd></th>
+              <td>収録モードの切替（単音モード &harr; 和音・全弦モード）</td>
+            </tr>
+            <tr>
+              <th><kbd>A</kbd> または <kbd>Alt</kbd>+<kbd>&uarr;</kbd>/<kbd>&darr;</kbd></th>
+              <td>選択中の音符と同じタイミングの別弦に音符（<code>?</code>）を追加して和音化</td>
+            </tr>
+            <tr>
+              <th><kbd>Shift</kbd> + <kbd>C</kbd></th>
+              <td>選択中のイベントの空いているすべての弦に未確定音符（<code>?</code>）を一括展開</td>
+            </tr>
+            <tr>
+              <th><kbd>T</kbd> （または <kbd>S</kbd>）</th>
+              <td>タイ／スラーのON/OFF切替（次の音符と同じフレットならタイ、別フレットならスラーとして再生・描画。複数選択での一括適用にも対応）</td>
+            </tr>
+            <tr>
+              <th><kbd>B</kbd></th>
+              <td>チョーキング（ベンド）の切替。押すたびに「なし &rarr; 半音(1/2) &rarr; 全音(Full) &rarr; なし」と切り替わります</td>
+            </tr>
+            <tr>
+              <th><kbd>X</kbd></th>
+              <td>ゴーストノート（<code>X</code> / ミュート音）のON/OFF切替</td>
+            </tr>
+            <tr>
+              <th><kbd>[</kbd> / <kbd>]</kbd> （または <kbd>-</kbd> / <kbd>+</kbd>）</th>
+              <td>選択中の音符の長さ（音価）を1ステップ単位で伸縮</td>
+            </tr>
+            <tr>
+              <th><kbd>Shift</kbd> + <kbd>&larr;</kbd> / <kbd>&rarr;</kbd></th>
+              <td>選択中の音符の発音タイミング自体を前後に1ステップずらす</td>
+            </tr>
+            <tr>
+              <th><kbd>Delete</kbd> / <kbd>Backspace</kbd></th>
+              <td>選択中の音符を削除（削除した部分は自動的に適切な休符に変換されます）</td>
+            </tr>
+            <tr>
+              <th><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></th>
+              <td>元に戻す（Undo） ／ やり直す（Redo）</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 主な仕様・対応機能 -->
+      <section id="specs">
+        <h2>対応している記譜・機能仕様</h2>
+        <table>
+          <tbody>
+            <tr>
+              <th>対応楽器・チューニング</th>
+              <td>
+                ギター（6弦）およびベース（4弦）に対応。チューニングはレギュラー（Standard）、半音下げ（Half Step Down）、全音下げ（Whole Step Down）、ドロップD（Drop D）から選択でき、再生音と五線譜の変換に即座に反映されます。
+              </td>
+            </tr>
+            <tr>
+              <th>分解能・クオンタイズ</th>
+              <td>
+                1小節あたり最大32ステップ（32分音符単位）。収録時の自動クオンタイズは「8分音符」「16分音符」「32分音符」から選択可能で、音符の隙間は全休符〜32分休符まで音楽理論に沿って自動分割・描画されます。
+              </td>
+            </tr>
+            <tr>
+              <th>奏法・ニュアンス記譜</th>
+              <td>
+                タイ・スラー（曲線描画およびレガート再生）、ゴーストノート（<code>X</code>表記およびパーカッシブなミュート音再生）、チョーキング（半音 <code>1/2</code>・全音 <code>Full</code> のベンド矢印描画およびWeb Audio APIによる滑らかなピッチベンド再生）に対応。
+              </td>
+            </tr>
+            <tr>
+              <th>レイアウト・出力</th>
+              <td>
+                1段あたりの横小節数を 1〜8小節（標準4小節）から自由に切り替え可能。画面ズーム（50%〜150%）、JSON形式でのプロジェクト保存・読込、ブラウザ印刷機能を使ったA4・PDF出力に対応しています。
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- よくある質問 -->
+      <section id="faq">
+        <h2>よくある質問（FAQ）</h2>
+
+        <div class="faq-item">
+          <div class="faq-q">Q. 作成した譜面データはサーバーに送信されますか？</div>
+          <div class="faq-a">
+            いいえ。作成中の譜面データはすべてお使いのブラウザ内（LocalStorage）にのみ自動保存されます。外部のサーバーへ譜面データが送信・保存されることはありません。別PCへデータを移したい場合やバックアップを取りたい場合は、画面上部の「保存」ボタンからJSONファイルとしてダウンロードしてください。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Q. 和音の構成音の一部だけにタイやスラーをかけることはできますか？</div>
+          <div class="faq-a">
+            可能です。和音の中の特定の音符だけをクリック（または <kbd>Shift</kbd> / <kbd>Ctrl</kbd> を押しながら複数クリック）して選択し、<kbd>T</kbd> キーを押すか画面下部インスペクターの「タイ/スラー」ボタンを押すことで、選択した弦の音符だけに弧線を引くことができます。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Q. スマートフォンやタブレットでも使えますか？</div>
+          <div class="faq-a">
+            画面上の「打鍵」ボタンのタップ操作やインスペクターのボタン操作に対応しているため閲覧・簡易編集は可能ですが、数字キーでの素早いフレット入力や矢印キーでの移動を前提に作っているため、PC（Chrome / Edge / Firefox / Safari）での利用を強く推奨します。
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Q. 商用利用や動画・ブログへの譜面掲載は自由ですか？</div>
+          <div class="faq-a">
+            本ツールで作成・出力したTAB譜や五線譜の画像・PDFを、ご自身のYouTube動画、教則ブログ、バンド内の共有資料などに掲載・利用していただくことは完全に自由です（クレジット表記等も不要です）。ただし、著作権のある楽曲の譜面を公開する場合は、各楽曲の権利規定に従ってください。
+          </div>
+        </div>
+
+        <div style="margin-top: 24px; text-align: center;">
+          <a class="btn-launch" href="/tab-maker/">EasyTapTabs エディタを起動する &rarr;</a>
+        </div>
+      </section>
+
+      <!-- プライバシーポリシー・免責事項 -->
+      <section id="privacy" class="policy-section">
+        <h2>プライバシーポリシー・免責事項</h2>
+
+        <h3>1. 広告の配信について</h3>
+        <p>
+          当サイトでは、第三者配信の広告サービス（Google AdSense）を利用しています。広告配信事業者は、ユーザーの興味に応じた商品やサービスの広告を表示するため、当サイトや他サイトへのアクセスに関する情報「Cookie」（氏名、住所、メールアドレス、電話番号は含まれません）を使用することがあります。
+        </p>
+        <p>
+          Google AdSenseに関して、このプロセスの詳細やこのような情報が広告配信事業者に使用されないようにする方法については、<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener noreferrer">Googleの広告と規約ページ</a>をご確認ください。ユーザーはGoogleの広告設定ページでパーソナライズ広告を無効にすることができます。
+        </p>
+
+        <h3>2. データの保存と取り扱いについて</h3>
+        <p>
+          本ツール（EasyTapTabs）で作成・編集された楽譜データは、ユーザー自身のブラウザのローカルストレージ（LocalStorage）に保存されます。また、音声入力機能を使用する場合のマイク・オーディオ入力音声はブラウザ内部でのみリアルタイム音量解析に使用され、外部サーバーへの録音・送信・保存は一切行われません。
+        </p>
+
+        <h3>3. 免責事項</h3>
+        <p>
+          当サイトのツールおよび掲載情報の利用により生じたいかなる損害やトラブルについても、運営者は一切の責任を負いかねます。作成した重要な譜面データは、適宜「保存（JSONダウンロード）」または「印刷（PDF保存）」にてご自身の端末へバックアップをお願いいたします。
+        </p>
+
+        <h3>4. 運営者情報・お問い合わせ</h3>
+        <p style="margin-bottom:0;">
+          運営者：hiroki（個人開発）<br />
+          不具合の報告や機能のご要望、その他のお問い合わせにつきましては、<a href="https://github.com/hirokidesuyo/tab-maker/issues" target="_blank" rel="noopener noreferrer">GitHub リポジトリの Issues</a> よりご連絡ください。
+        </p>
+      </section>
+
+      <footer>
+        <div>&copy; EasyTapTabs</div>
+        <div>
+          <a href="/tab-maker/">ツールを開く</a> &nbsp;|&nbsp;
+          <a href="#privacy">プライバシーポリシー</a> &nbsp;|&nbsp;
+          <a href="https://github.com/hirokidesuyo/tab-maker" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+</body>
 </html>
