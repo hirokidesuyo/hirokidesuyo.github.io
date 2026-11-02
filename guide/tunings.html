@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>チューニングの切り替え | EasyTapTabs 使い方ガイド</title>
+  <meta name="description" content="EasyTapTabs は複数のチューニングに対応しており、切り替えは再生音と五線譜の変換に即座に反映されます。変則チューニングの曲を採譜するときの考え方もあわせて解説します。" />
+  <link rel="icon" type="image/png" href="../favicon.png" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YQGN95KHX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-9YQGN95KHX');
+  </script>
+  <meta name="google-adsense-account" content="ca-pub-2949901639211282">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2949901639211282" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg-page: #ececec;
+      --bg-paper: #ffffff;
+      --bg-subtle: #f6f6f6;
+      --border-main: #c4c4c4;
+      --border-light: #dcdcdc;
+      --text-main: #1e293b;
+      --text-sub: #475569;
+      --text-muted: #64748b;
+      --accent: #0f172a;
+      --accent-blue: #0369a1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+      font-size: 14px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* 上部バー（アプリ本体と同じトーン） */
+    .topbar {
+      background-color: #f3f3f3;
+      border-bottom: 1px solid var(--border-main);
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+    .topbar-inner {
+      max-width: 880px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .brand {
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .brand span {
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+    }
+    .nav-links a {
+      color: var(--text-sub);
+    }
+
+    /* メインコンテナ（紙のスコアシート・取扱説明書風） */
+    .container {
+      max-width: 880px;
+      margin: 20px auto 48px;
+      padding: 0 12px;
+    }
+
+    .sheet {
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-main);
+      padding: 32px 36px;
+    }
+
+    @media (max-width: 640px) {
+      .sheet {
+        padding: 20px 16px;
+      }
+    }
+
+    /* 見出しスタイル */
+    h1 {
+      margin: 0 0 16px 0;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 12px;
+    }
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 28px 0 14px 0;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-main);
+      color: var(--accent);
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 20px 0 6px 0;
+      color: var(--text-main);
+    }
+    p {
+      margin: 0 0 14px 0;
+    }
+
+    .lead-text {
+      color: var(--text-sub);
+      font-size: 14.5px;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .btn-launch {
+      display: inline-block;
+      background-color: var(--accent);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 24px;
+      border: 1px solid #000000;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-launch:hover {
+      background-color: #334155;
+      text-decoration: none;
+    }
+
+    .note-box {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      padding: 12px 16px;
+      margin: 14px 0;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    /* テーブルスタイル */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 20px 0;
+      font-size: 13.5px;
+    }
+    th, td {
+      border: 1px solid var(--border-light);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background-color: var(--bg-subtle);
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* 記事フッターCTA */
+    .article-footer-cta {
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    footer {
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-main);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        EasyTapTabs <span>使い方ガイド</span>
+      </div>
+      <nav class="nav-links">
+        <a href="../">トップページ</a>
+        <a href="./">ガイド一覧</a>
+        <a href="/tab-maker/">ツールを開く</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <main class="sheet">
+      <h1>チューニングの切り替え</h1>
+
+      <p class="lead-text">
+        EasyTapTabs は複数のチューニングに対応しており、切り替えは再生音と五線譜の変換に即座に反映されます。変則チューニングの曲を採譜するときの考え方もあわせて解説します。
+      </p>
+
+      <h2>対応チューニング</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 35%;">チューニング</th>
+            <th>内容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>レギュラー（Standard）</td>
+            <td>標準のチューニング</td>
+          </tr>
+          <tr>
+            <td>半音下げ（Half Step Down）</td>
+            <td>全弦を半音下げ</td>
+          </tr>
+          <tr>
+            <td>全音下げ（Whole Step Down）</td>
+            <td>全弦を全音下げ</td>
+          </tr>
+          <tr>
+            <td>ドロップD（Drop D）</td>
+            <td>6弦（ベースは4弦）のみ全音下げ</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        対応楽器はギター（6弦）とベース（4弦）です。チューニングを切り替えると、再生される音程と、五線譜表示に変換される音高がその場で変わります。
+      </p>
+
+      <h2>変則チューニングの曲を採譜するとき</h2>
+      <p>
+        原曲が半音下げやドロップDで演奏されている場合、先にチューニングを合わせてから採譜を始めると、フレット番号と実際の音程が一致したまま作業できます。途中でチューニングを変えても、譜面のフレット番号はそのままに、再生音と五線譜だけが新しいチューニングに合わせて再計算されます。
+      </p>
+
+      <div class="article-footer-cta">
+        <a href="./">&larr; ガイド一覧に戻る</a>
+        <a class="btn-launch" href="/tab-maker/">EasyTapTabs を開く &rarr;</a>
+      </div>
+
+      <footer>
+        <div>&copy; EasyTapTabs</div>
+        <div>
+          <a href="/tab-maker/">ツールを開く</a> &nbsp;|&nbsp;
+          <a href="../#privacy">プライバシーポリシー</a> &nbsp;|&nbsp;
+          <a href="https://x.com/minhayaMisettei" target="_blank" rel="noopener noreferrer">X (@minhayaMisettei)</a>
+        </div>
+        <div style="width: 100%; font-size: 11px;">このサイトはアフィリエイト広告（Amazonアソシエイト含む）を掲載しています。</div>
+      </footer>
+    </main>
+  </div>
+
+</body>
+</html>
