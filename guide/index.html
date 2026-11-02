@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>使い方ガイド | EasyTapTabs</title>
+  <meta name="description" content="EasyTapTabs の使い方を、テーマごとに分けて解説するページです。初めて使う方は「はじめての使い方」から読むのがおすすめです。" />
+  <link rel="icon" type="image/png" href="../favicon.png" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9YQGN95KHX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-9YQGN95KHX');
+  </script>
+  <meta name="google-adsense-account" content="ca-pub-2949901639211282">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2949901639211282" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg-page: #ececec;
+      --bg-paper: #ffffff;
+      --bg-subtle: #f6f6f6;
+      --border-main: #c4c4c4;
+      --border-light: #dcdcdc;
+      --text-main: #1e293b;
+      --text-sub: #475569;
+      --text-muted: #64748b;
+      --accent: #0f172a;
+      --accent-blue: #0369a1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+      font-size: 14px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* 上部バー（アプリ本体と同じトーン） */
+    .topbar {
+      background-color: #f3f3f3;
+      border-bottom: 1px solid var(--border-main);
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+    .topbar-inner {
+      max-width: 880px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .brand {
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .brand span {
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+    }
+    .nav-links a {
+      color: var(--text-sub);
+    }
+
+    /* メインコンテナ（紙のスコアシート・取扱説明書風） */
+    .container {
+      max-width: 880px;
+      margin: 20px auto 48px;
+      padding: 0 12px;
+    }
+
+    .sheet {
+      background-color: var(--bg-paper);
+      border: 1px solid var(--border-main);
+      padding: 32px 36px;
+    }
+
+    @media (max-width: 640px) {
+      .sheet {
+        padding: 20px 16px;
+      }
+    }
+
+    /* 見出しスタイル */
+    h1 {
+      margin: 0 0 16px 0;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 12px;
+    }
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 28px 0 14px 0;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-main);
+      color: var(--accent);
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 20px 0 6px 0;
+      color: var(--text-main);
+    }
+    p {
+      margin: 0 0 14px 0;
+    }
+
+    .lead-text {
+      color: var(--text-sub);
+      font-size: 14.5px;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .btn-launch {
+      display: inline-block;
+      background-color: var(--accent);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 24px;
+      border: 1px solid #000000;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-launch:hover {
+      background-color: #334155;
+      text-decoration: none;
+    }
+
+    .note-box {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      padding: 12px 16px;
+      margin: 14px 0;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    /* 一覧用リストスタイル */
+    .guide-list {
+      list-style: none;
+      padding: 0;
+      margin: 24px 0 32px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .guide-item {
+      border: 1px solid var(--border-light);
+      background-color: #fcfcfc;
+      padding: 16px 20px;
+    }
+    .guide-item-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .guide-item-desc {
+      color: var(--text-sub);
+      font-size: 13.5px;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* 記事フッターCTA */
+    .article-footer-cta {
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    footer {
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-main);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        EasyTapTabs <span>使い方ガイド</span>
+      </div>
+      <nav class="nav-links">
+        <a href="../">トップページ</a>
+        <a href="./">ガイド一覧</a>
+        <a href="/tab-maker/">ツールを開く</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <main class="sheet">
+      <h1>使い方ガイド</h1>
+
+      <p class="lead-text">
+        EasyTapTabs の使い方を、テーマごとに分けて解説するページです。初めて使う方は「はじめての使い方」から読むのがおすすめです。
+      </p>
+
+      <div class="guide-list">
+        <div class="guide-item">
+          <div class="guide-item-title"><a href="getting-started.html">1. はじめての使い方</a></div>
+          <p class="guide-item-desc">リズムを刻んでからフレットを埋める、基本の3ステップを解説します。</p>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title"><a href="tips.html">2. 綺麗に採譜するためのコツ</a></div>
+          <p class="guide-item-desc">BPMの落とし方、音声入力のブラッシング、小節だけの録り直しなど実用テクニック。</p>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title"><a href="playback.html">3. 再生確認と五線譜表示</a></div>
+          <p class="guide-item-desc">内蔵シンセでの再生確認と、五線譜への自動変換について。</p>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title"><a href="notation.html">4. 音価・タイ・休符の自動処理</a></div>
+          <p class="guide-item-desc">長い音符のタイ分解や休符の自動分割など、記譜まわりの仕組み。</p>
+        </div>
+
+        <div class="guide-item">
+          <div class="guide-item-title"><a href="output.html">5. 保存と出力のしかた</a></div>
+          <p class="guide-item-desc">JSON保存、PDF印刷、動画書き出しなど、作った譜面の残し方。</p>
+        </div>
+      </div>
+
+      <div class="article-footer-cta">
+        <a href="../">&larr; トップページに戻る</a>
+        <a class="btn-launch" href="/tab-maker/">EasyTapTabs を開く &rarr;</a>
+      </div>
+
+      <footer>
+        <div>&copy; EasyTapTabs</div>
+        <div>
+          <a href="/tab-maker/">ツールを開く</a> &nbsp;|&nbsp;
+          <a href="../#privacy">プライバシーポリシー</a> &nbsp;|&nbsp;
+          <a href="https://x.com/minhayaMisettei" target="_blank" rel="noopener noreferrer">X (@minhayaMisettei)</a>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+</body>
+</html>
